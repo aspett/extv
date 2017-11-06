@@ -22,6 +22,10 @@ defmodule ExTV.Series do
     get!("series/#{id}").body
   end
 
+  def search_by_name(name) do
+    get!("search/series", [], params: %{name: name}).body["data"]
+  end
+
   @doc """
   Fetches information about actors for a single TV series.
 
