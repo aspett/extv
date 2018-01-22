@@ -57,7 +57,7 @@ defmodule ExTV.Series do
       |> handle_response()
     end
 
-    stream(fetch_page, &default_extract/1, &default_next_page/2, [raise: raise_on_error])
+    {fetch_page, [raise_on_error: raise_on_error]}
   end
 
   @doc """

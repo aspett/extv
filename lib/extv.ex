@@ -12,6 +12,9 @@ defmodule ExTV do
   """
 
   use Application
+
+  alias ExTV.{Streamable}
+
   require Logger
 
   def start(_type, _args) do
@@ -28,5 +31,21 @@ defmodule ExTV do
   def api_key do
     Application.get_env(:extv, :tvdb_api_key) ||
       System.get_env("TVDB_API_KEY")
+  end
+
+  def stream({fetch_fn, opts}) do
+    raise_on_error = fetch_opt(opts, :raise_on_error, false)
+    Streamable.stream(fetch_fn, &Streamable.default_extract/1, &Streamable.default_next_page/2, [raise: raise_on_error])
+  end
+
+  def fetch({fetch_fn, _opts}, page) do
+    fetch_fn.(page)
+  end
+
+  defp fetch_opt([_ | _] = opts, opt, default) do
+    case Keyword.fetch(opts, opt) do
+      :error -> default
+      value -> value
+    end
   end
 end
